@@ -12,8 +12,6 @@ from boto.s3.bucket import Bucket
 from boto.s3.key import Key
 from dateutil.parser import parse as parse_ts
 
-connection = None
-
 class Storage(BaseStorage):
 
     @property
@@ -25,18 +23,16 @@ class Storage(BaseStorage):
         self.storage = self.__get_s3_bucket()
 
     def __get_s3_connection(self):
-        conn = connection
-        if conn is None:
+        if self.connection is None:
           logger.debug("ESTABLISHING NEW S3 CONNECTION")
-          connection = S3Connection(
+          self.connection = S3Connection(
               self.context.config.AWS_ACCESS_KEY,
               self.context.config.AWS_SECRET_KEY
           )
-          conn = connection
         else:
           logger.debug("REUSING S3 CONNECTION")
 
-        return conn
+        return self.connection
 
     def __get_s3_bucket(self):
         return Bucket(
