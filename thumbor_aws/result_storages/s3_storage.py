@@ -26,13 +26,10 @@ class Storage(BaseStorage):
 
     def __get_s3_connection(self):
         if self.__class__.connection is None:
-          logger.debug("ESTABLISHING NEW S3 CONNECTION")
           self.__class__.connection = S3Connection(
               self.context.config.AWS_ACCESS_KEY,
               self.context.config.AWS_SECRET_KEY
           )
-        else:
-          logger.debug("REUSING S3 CONNECTION")
 
         return self.__class__.connection
 
