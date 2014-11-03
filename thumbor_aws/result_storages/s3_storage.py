@@ -20,6 +20,7 @@ class Storage(BaseStorage):
 
     def __init__(self, context):
         BaseStorage.__init__(self, context)
+        self.connection = None
         self.storage = self.__get_s3_bucket()
 
     def __get_s3_connection(self):
