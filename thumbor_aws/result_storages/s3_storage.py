@@ -14,10 +14,7 @@ from dateutil.parser import parse as parse_ts
 
 class Storage(BaseStorage):
 
-    connection = S3Connection(
-      self.context.config.AWS_ACCESS_KEY,
-      self.context.config.AWS_SECRET_KEY
-    )
+    connection = None
 
     @property
     def is_auto_webp(self):
@@ -25,11 +22,24 @@ class Storage(BaseStorage):
 
     def __init__(self, context):
         BaseStorage.__init__(self, context)
+        self.connection = None
         self.storage = self.__get_s3_bucket()
+
+    def __get_s3_connection(self):
+        if connection is None:
+          logger.debug("ESTABLISHING NEW S3 CONNECTION")
+          connection = S3Connection(
+              self.context.config.AWS_ACCESS_KEY,
+              self.context.config.AWS_SECRET_KEY
+          )
+        else:
+          logger.debug("REUSING S3 CONNECTION")
+
+        return connection
 
     def __get_s3_bucket(self):
         return Bucket(
-            connection=connection,
+            connection=self.__get_s3_connection(),
             name=self.context.config.RESULT_STORAGE_BUCKET
         )
 
